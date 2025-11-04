@@ -1,9 +1,11 @@
 name: Daily Dashboard Update
 
 on:
-  # Run every day at 8 AM UTC
+  # Run daily near 08:00 UK local time (handles GMT/BST by triggering at both 07:00 and 08:00 UTC)
+  # A guard step below ensures we only proceed when Europe/London hour == 08
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 7 * * *'   # Covers BST (UTC+1)
+    - cron: '0 8 * * *'   # Covers GMT (UTC+0)
   
   # Allow manual trigger
   workflow_dispatch:
@@ -16,12 +18,28 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
       
+    - name: Decide if UK time is 08:00
+      id: timecheck
+      shell: bash
+      run: |
+        hour=$(TZ=Europe/London date +%H)
+        echo "UK current hour: $hour"
+        if [ "$hour" = "08" ]; then
+          echo "run=true" >> $GITHUB_OUTPUT
+          echo "Proceeding: It is 08:00 in UK (Europe/London)."
+        else
+          echo "run=false" >> $GITHUB_OUTPUT
+          echo "Skipping: Not 08:00 in UK (Europe/London)."
+        fi
+      
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
+      if: ${{ steps.timecheck.outputs.run == 'true' || github.event_name == 'workflow_dispatch' }}
         
     - name: Install dependencies
+      if: ${{ steps.timecheck.outputs.run == 'true' || github.event_name == 'workflow_dispatch' }}
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
@@ -29,15 +47,18 @@ jobs:
     - name: Build dashboard
       env:
         DATA_DIR: ${{ github.workspace }}
+      if: ${{ steps.timecheck.outputs.run == 'true' || github.event_name == 'workflow_dispatch' }}
       run: |
         python scripts/build_for_netlify.py
         
     - name: Configure git
+      if: ${{ steps.timecheck.outputs.run == 'true' || github.event_name == 'workflow_dispatch' }}
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "Sustainability Dashboard Bot"
         
     - name: Commit and push changes
+      if: ${{ steps.timecheck.outputs.run == 'true' || github.event_name == 'workflow_dispatch' }}
       run: |
         git add public/
         git add sustainability_updates_enhanced.db || true
