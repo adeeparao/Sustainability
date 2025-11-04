@@ -1,0 +1,39 @@
+[build]
+  # Build command that Netlify will run
+  command = "python scripts/build_for_netlify.py"
+  
+  # Directory to publish (must contain index.html)
+  publish = "public"
+
+[build.environment]
+  # Python version for Netlify build
+  PYTHON_VERSION = "3.11"
+  
+  # Set DATA_DIR for build
+  DATA_DIR = "."
+
+[context.production]
+  command = "python scripts/build_for_netlify.py"
+
+[context.deploy-preview]
+  command = "python scripts/build_for_netlify.py"
+
+[[redirects]]
+  # Redirect root to dashboard
+  from = "/"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  # Cache static assets
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

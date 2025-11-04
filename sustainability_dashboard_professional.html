@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sustainability Regulation Dashboard | Deepa Rao</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, #2a5d84 0%, #1e4a6b 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.header .subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 20px;
+}
+
+.header .meta {
+    font-size: 0.95rem;
+    opacity: 0.85;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    background: #f8f9fa;
+}
+
+.stat-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2a5d84;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 0.95rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.impact-high .stat-number { color: #dc3545; }
+.impact-medium .stat-number { color: #fd7e14; }
+.impact-low .stat-number { color: #28a745; }
+
+.content {
+    padding: 40px;
+}
+
+.section {
+    margin-bottom: 50px;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: #2a5d84;
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #2a5d84;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.compliance-calendar {
+    display: grid;
+    gap: 15px;
+}
+
+.deadline-card {
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    border-left: 5px solid #2a5d84;
+    padding: 20px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.deadline-card:hover {
+    border-left-color: #667eea;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.deadline-card.urgent {
+    border-left-color: #dc3545;
+    background: #fff5f5;
+}
+
+.deadline-date {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2a5d84;
+    margin-bottom: 8px;
+}
+
+.deadline-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+}
+
+.deadline-jurisdiction {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #e8f4f8;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: #2a5d84;
+    margin-bottom: 10px;
+}
+
+.update-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 25px;
+    transition: all 0.2s;
+}
+
+.update-card:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    transform: translateX(4px);
+}
+
+.update-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.update-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    flex: 1;
+    min-width: 250px;
+}
+
+.update-badges {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.badge-high { background: #ffe0e0; color: #dc3545; }
+.badge-medium { background: #fff3cd; color: #fd7e14; }
+.badge-low { background: #d4edda; color: #28a745; }
+.badge-source { background: #e8f4f8; color: #2a5d84; }
+
+.update-meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+.meta-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-label {
+    font-weight: 600;
+    color: #666;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-value {
+    color: #1a1a1a;
+}
+
+.update-summary {
+    color: #444;
+    line-height: 1.7;
+    margin: 15px 0;
+}
+
+.update-changes {
+    background: #fffbf0;
+    border-left: 4px solid #fd7e14;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+.changes-title {
+    font-weight: 600;
+    color: #fd7e14;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.update-sectors {
+    margin: 15px 0;
+}
+
+.sectors-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.sector-tag {
+    background: #e8f4f8;
+    color: #2a5d84;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+}
+
+.update-link {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #2a5d84;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.update-link:hover {
+    background: #1e4a6b;
+    transform: translateX(4px);
+}
+
+.footer {
+    background: #2a5d84;
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.footer-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.footer-subtitle {
+    opacity: 0.9;
+    margin-bottom: 15px;
+}
+
+.footer-meta {
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .header h1 { font-size: 1.8rem; }
+    .stats-grid { grid-template-columns: 1fr; padding: 20px; }
+    .content { padding: 20px; }
+    .update-header { flex-direction: column; }
+    .update-meta { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🌍 Sustainability Regulation Dashboard</h1>
+        <div class="subtitle">Global ESG & Climate Disclosure Tracking System</div>
+        <div class="meta">
+            <div class="meta-item">
+                <span>📊</span>
+                <span>Generated: November 04, 2025 at 19:39 UTC</span>
+            </div>
+            <div class="meta-item">
+                <span>👤</span>
+                <span>Prepared by: <strong>Deepa Rao</strong></span>
+            </div>
+            <div class="meta-item">
+                <span>📈</span>
+                <span>7 Active Regulations</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">7</div>
+            <div class="stat-label">Total Updates</div>
+        </div>
+        <div class="stat-card impact-high">
+            <div class="stat-number">7</div>
+            <div class="stat-label">High Impact</div>
+        </div>
+        <div class="stat-card impact-medium">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Medium Impact</div>
+        </div>
+        <div class="stat-card impact-low">
+            <div class="stat-number">0</div>
+            <div class="stat-label">Low Impact</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">2</div>
+            <div class="stat-label">IFRS</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">1</div>
+            <div class="stat-label">India</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">1</div>
+            <div class="stat-label">UK</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">1</div>
+            <div class="stat-label">EU</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">1</div>
+            <div class="stat-label">Japan</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-number">1</div>
+            <div class="stat-label">SBTi</div>
+        </div>
+
+    </div>
+
+    <div class="content">
+
+        <div class="section">
+            <h2 class="section-title">📅 Compliance Calendar</h2>
+            <div class="compliance-calendar">
+
+                <div class="deadline-card ">
+                    <div class="deadline-date">⏰ 2024-01-01 (varying by jurisdiction)</div>
+                    <div class="deadline-title">IFRS S1 – General requirements for sustainability disclosures</div>
+                    <span class="deadline-jurisdiction">Global (adopted by 30+ jurisdictions)</span>
+                </div>
+
+                <div class="deadline-card ">
+                    <div class="deadline-date">⏰ 2024-01-01 (varying by jurisdiction)</div>
+                    <div class="deadline-title">IFRS S2 – Climate‑related disclosures</div>
+                    <span class="deadline-jurisdiction">Global (adopted by 30+ jurisdictions)</span>
+                </div>
+
+                <div class="deadline-card ">
+                    <div class="deadline-date">⏰ 2024-04-01 (BRSR Core with assurance for top 150), 2023-04-01 (BRSR for top 1000)</div>
+                    <div class="deadline-title">India moves toward ESG oversight and stricter disclosure</div>
+                    <span class="deadline-jurisdiction">India</span>
+                </div>
+
+                <div class="deadline-card urgent">
+                    <div class="deadline-date">⏰ 2026-04-01 (expected, voluntary initially)</div>
+                    <div class="deadline-title">UK consultation on Sustainability Reporting Standards</div>
+                    <span class="deadline-jurisdiction">United Kingdom</span>
+                </div>
+
+                <div class="deadline-card urgent">
+                    <div class="deadline-date">⏰ 2026-12-31</div>
+                    <div class="deadline-title">Commission adopts 'quick fix' for ESRS wave‑one companies</div>
+                    <span class="deadline-jurisdiction">European Union (EU27)</span>
+                </div>
+
+                <div class="deadline-card ">
+                    <div class="deadline-date">⏰ 2027-03-31 (≥¥3T market cap), 2028-03-31 (¥1-3T market cap)</div>
+                    <div class="deadline-title">Japan's roadmap for SSBJ sustainability disclosure standards</div>
+                    <span class="deadline-jurisdiction">Japan</span>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">📋 Detailed Regulation Updates</h2>
+
+            <h3 style="color: #2a5d84; margin: 30px 0 20px 0; font-size: 1.5rem;">
+                IFRS - Global (adopted by 30+ jurisdictions)
+            </h3>
+
+            <div class="update-card">
+                <div class="update-header">
+                    <div class="update-title">IFRS S1 – General requirements for sustainability disclosures</div>
+                    <div class="update-badges">
+                        <span class="badge badge-source">IFRS</span>
+                        <span class="badge badge-high">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="update-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">First Published</span>
+                        <span class="meta-value">2023-06-26</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Last Updated</span>
+                        <span class="meta-value">2024-04-09</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Compliance Deadline</span>
+                        <span class="meta-value">2024-01-01 (varying by jurisdiction)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Jurisdiction</span>
+                        <span class="meta-value">Global (adopted by 30+ jurisdictions)</span>
+                    </div>
+                </div>
+                
+                <div class="update-summary">IFRS S1 requires companies to disclose information about all sustainability‑related risks and opportunities that could reasonably be expected to affect cash flows, access to finance or cost of capital. Organisations must report on governance, strategy, risk management and performance regarding sustainability‑related matters.</div>
+
+                <div class="update-changes">
+                    <div class="changes-title">📌 Significant Changes</div>
+                    <div>Comprehensive sustainability disclosure framework; Aligned with TCFD recommendations; Integration with IFRS Accounting Standards; Four-pillar structure (Governance, Strategy, Risk Management, Metrics)</div>
+                </div>
+
+                <div class="update-sectors">
+                    <div class="meta-label">Affected Sectors</div>
+                    <div class="sectors-list">
+<span class="sector-tag">All sectors - Public companies</span><span class="sector-tag">Financial institutions</span><span class="sector-tag">Large private entities</span>
+                    </div>
+                </div>
+
+                <a href="https://www.ifrs.org/issued-standards/ifrs-sustainability-standards-navigator/ifrs-s1-general-requirements/" class="update-link" target="_blank">Read Full Document →</a>
+            </div>
+
+            <div class="update-card">
+                <div class="update-header">
+                    <div class="update-title">IFRS S2 – Climate‑related disclosures</div>
+                    <div class="update-badges">
+                        <span class="badge badge-source">IFRS</span>
+                        <span class="badge badge-high">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="update-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">First Published</span>
+                        <span class="meta-value">2023-06-26</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Last Updated</span>
+                        <span class="meta-value">2024-04-09</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Compliance Deadline</span>
+                        <span class="meta-value">2024-01-01 (varying by jurisdiction)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Jurisdiction</span>
+                        <span class="meta-value">Global (adopted by 30+ jurisdictions)</span>
+                    </div>
+                </div>
+                
+                <div class="update-summary">IFRS S2 focuses on climate‑related disclosures.  Companies must report on physical and transition climate risks and opportunities that could affect their prospects.  Disclosures cover governance, strategy, risk identification processes and performance against climate targets.</div>
+
+                <div class="update-changes">
+                    <div class="changes-title">📌 Significant Changes</div>
+                    <div>Mandatory Scope 1, 2, 3 GHG emissions disclosure; Climate scenario analysis required; Industry-based metrics (SASB alignment); Transition plans and targets; Climate-related financial impacts</div>
+                </div>
+
+                <div class="update-sectors">
+                    <div class="meta-label">Affected Sectors</div>
+                    <div class="sectors-list">
+<span class="sector-tag">All sectors - Energy</span><span class="sector-tag">Transportation</span><span class="sector-tag">Manufacturing</span><span class="sector-tag">Agriculture prioritized</span>
+                    </div>
+                </div>
+
+                <a href="https://www.ifrs.org/issued-standards/ifrs-sustainability-standards-navigator/ifrs-s2-climate-related-disclosures/" class="update-link" target="_blank">Read Full Document →</a>
+            </div>
+
+            <h3 style="color: #2a5d84; margin: 30px 0 20px 0; font-size: 1.5rem;">
+                India - India
+            </h3>
+
+            <div class="update-card">
+                <div class="update-header">
+                    <div class="update-title">India moves toward ESG oversight and stricter disclosure</div>
+                    <div class="update-badges">
+                        <span class="badge badge-source">India</span>
+                        <span class="badge badge-high">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="update-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">First Published</span>
+                        <span class="meta-value">2021-05-05</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Last Updated</span>
+                        <span class="meta-value">2025-08-11</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Compliance Deadline</span>
+                        <span class="meta-value">2024-04-01 (BRSR Core with assurance for top 150), 2023-04-01 (BRSR for top 1000)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Jurisdiction</span>
+                        <span class="meta-value">India</span>
+                    </div>
+                </div>
+                
+                <div class="update-summary">India's Parliamentary Standing Committee on Finance (August 2025) recommended establishing a dedicated ESG oversight body within the Ministry of Corporate Affairs to combat greenwashing.  The committee proposes amending the Companies Act to make ESG a core duty of directors, deploying forensic experts, issuing sector‑specific guidelines and imposing stricter penalties for false ESG claims.  The Securities and Exchange Board of India requires the top 1,000 listed companies to report ESG performance using the Business Responsibility and Sustainability Reporting (BRSR) framework, which aligns with GRI and SASB standards.</div>
+
+                <div class="update-changes">
+                    <div class="changes-title">📌 Significant Changes</div>
+                    <div>BRSR Core framework with limited assurance; Extended to top 1000 companies; ESG oversight body proposed; Director fiduciary duties to include ESG; Enhanced penalties for greenwashing</div>
+                </div>
+
+                <div class="update-sectors">
+                    <div class="meta-label">Affected Sectors</div>
+                    <div class="sectors-list">
+<span class="sector-tag">Top 1000 listed companies</span><span class="sector-tag">Banking and Financial Services</span><span class="sector-tag">Manufacturing</span><span class="sector-tag">IT Services</span>
+                    </div>
+                </div>
+
+                <a href="https://www.drishtiias.com/daily-updates/daily-news-analysis/esg-oversight-in-india" class="update-link" target="_blank">Read Full Document →</a>
+            </div>
+
+            <h3 style="color: #2a5d84; margin: 30px 0 20px 0; font-size: 1.5rem;">
+                UK - United Kingdom
+            </h3>
+
+            <div class="update-card">
+                <div class="update-header">
+                    <div class="update-title">UK consultation on Sustainability Reporting Standards</div>
+                    <div class="update-badges">
+                        <span class="badge badge-source">UK</span>
+                        <span class="badge badge-high">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="update-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">First Published</span>
+                        <span class="meta-value">2025-06-25</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Last Updated</span>
+                        <span class="meta-value">2025-06-25</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Compliance Deadline</span>
+                        <span class="meta-value">2026-04-01 (expected, voluntary initially)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Jurisdiction</span>
+                        <span class="meta-value">United Kingdom</span>
+                    </div>
+                </div>
+                
+                <div class="update-summary">The UK government is consulting on draft Sustainability Reporting Standards S1 and S2 (UK SRS), based on the ISSB's IFRS S1 and S2.  The consultation opened on 25 June 2025 and closes on 17 September 2025.  After finalising the standards later in 2025 they will initially be voluntary.  The Department for Business and Trade and the Financial Conduct Authority will consider whether to mandate reporting against the UK SRS for certain entities.</div>
+
+                <div class="update-changes">
+                    <div class="changes-title">📌 Significant Changes</div>
+                    <div>UK-specific adaptations of IFRS S1/S2; Proportionality measures for smaller entities; Phased implementation approach; Alignment with UK Green Taxonomy</div>
+                </div>
+
+                <div class="update-sectors">
+                    <div class="meta-label">Affected Sectors</div>
+                    <div class="sectors-list">
+<span class="sector-tag">UK publicly traded companies</span><span class="sector-tag">Large private companies (>500 employees)</span><span class="sector-tag">Financial services</span>
+                    </div>
+                </div>
+
+                <a href="https://www.gov.uk/guidance/uk-sustainability-reporting-standards" class="update-link" target="_blank">Read Full Document →</a>
+            </div>
+
+            <h3 style="color: #2a5d84; margin: 30px 0 20px 0; font-size: 1.5rem;">
+                EU - European Union (EU27)
+            </h3>
+
+            <div class="update-card">
+                <div class="update-header">
+                    <div class="update-title">Commission adopts 'quick fix' for ESRS wave‑one companies</div>
+                    <div class="update-badges">
+                        <span class="badge badge-source">EU</span>
+                        <span class="badge badge-high">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="update-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">First Published</span>
+                        <span class="meta-value">2023-06-09</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Last Updated</span>
+                        <span class="meta-value">2025-07-11</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Compliance Deadline</span>
+                        <span class="meta-value">2026-12-31</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Jurisdiction</span>
+                        <span class="meta-value">European Union (EU27)</span>
+                    </div>
+                </div>
+                
+                <div class="update-summary">The European Commission's quick‑fix amendment allows companies already reporting for the financial year 2024 to defer disclosure of anticipated financial effects of sustainability‑related risks and opportunities for financial years 2025 and 2026.  This delegated act extends phase‑in relief previously available only to smaller companies, reducing reporting burdens while a broader simplification of the ESRS is underway.</div>
+
+                <div class="update-changes">
+                    <div class="changes-title">📌 Significant Changes</div>
+                    <div>Deferred disclosure of financial effects for FY2025-2026; Extended phase-in relief to wave-one companies; Reduced scope 3 emissions reporting burden</div>
+                </div>
+
+                <div class="update-sectors">
+                    <div class="meta-label">Affected Sectors</div>
+                    <div class="sectors-list">
+<span class="sector-tag">All EU large companies</span><span class="sector-tag">Listed SMEs</span><span class="sector-tag">Financial Institutions</span><span class="sector-tag">Multinational Corporations</span>
+                    </div>
+                </div>
+
+                <a href="https://finance.ec.europa.eu/publications/commission-adopts-quick-fix-companies-already-conducting-corporate-sustainability-reporting_en" class="update-link" target="_blank">Read Full Document →</a>
+            </div>
+
+            <h3 style="color: #2a5d84; margin: 30px 0 20px 0; font-size: 1.5rem;">
+                Japan - Japan
+            </h3>
+
+            <div class="update-card">
+                <div class="update-header">
+                    <div class="update-title">Japan's roadmap for SSBJ sustainability disclosure standards</div>
+                    <div class="update-badges">
+                        <span class="badge badge-source">Japan</span>
+                        <span class="badge badge-high">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="update-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">First Published</span>
+                        <span class="meta-value">2025-07-17</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Last Updated</span>
+                        <span class="meta-value">2025-07-17</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Compliance Deadline</span>
+                        <span class="meta-value">2027-03-31 (≥¥3T market cap), 2028-03-31 (¥1-3T market cap)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Jurisdiction</span>
+                        <span class="meta-value">Japan</span>
+                    </div>
+                </div>
+                
+                <div class="update-summary">Japan's Financial Services Agency published a roadmap on 17 July 2025 for adopting the Sustainability Standards Board of Japan (SSBJ) standards.  Prime Market companies with market capitalisation ≥3 trillion yen must apply the SSBJ standards in the fiscal year ending March 2027 with assurance from March 2028; those with 1–3 trillion yen apply the standards in FY 2028 with assurance from FY 2029.  Smaller companies (0.5–1 trillion yen) will be considered later.  The roadmap emphasises phased implementation and notes that third‑party assurance will start from FY 2028.</div>
+
+                <div class="update-changes">
+                    <div class="changes-title">📌 Significant Changes</div>
+                    <div>Phased rollout by market capitalization; Mandatory third-party assurance from FY2028; IFRS S1/S2 alignment with Japan-specific adaptations; Scope 3 relief for initial years</div>
+                </div>
+
+                <div class="update-sectors">
+                    <div class="meta-label">Affected Sectors</div>
+                    <div class="sectors-list">
+<span class="sector-tag">Prime Market listed companies</span><span class="sector-tag">Large Financial institutions</span><span class="sector-tag">Export-oriented manufacturing</span>
+                    </div>
+                </div>
+
+                <a href="https://www.noandt.com/wp-content/uploads/2025/07/capital_en_no8.pdf" class="update-link" target="_blank">Read Full Document →</a>
+            </div>
+
+            <h3 style="color: #2a5d84; margin: 30px 0 20px 0; font-size: 1.5rem;">
+                SBTi - Global (voluntary)
+            </h3>
+
+            <div class="update-card">
+                <div class="update-header">
+                    <div class="update-title">SBTi releases Financial Institutions Net‑Zero Standard</div>
+                    <div class="update-badges">
+                        <span class="badge badge-source">SBTi</span>
+                        <span class="badge badge-high">High Impact</span>
+                    </div>
+                </div>
+                
+                <div class="update-meta">
+                    <div class="meta-row">
+                        <span class="meta-label">First Published</span>
+                        <span class="meta-value">2025-07-22</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Last Updated</span>
+                        <span class="meta-value">2025-07-22</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Compliance Deadline</span>
+                        <span class="meta-value">Voluntary commitment (5-24 month target-setting timeline)</span>
+                    </div>
+                    <div class="meta-row">
+                        <span class="meta-label">Jurisdiction</span>
+                        <span class="meta-value">Global (voluntary)</span>
+                    </div>
+                </div>
+                
+                <div class="update-summary">On 22 July 2025 the Science Based Targets initiative (SBTi) released its first Financial Institutions Net‑Zero Standard.  The standard offers science‑based guidance for banks, asset owners, asset managers and private equity firms to align lending, investment, insurance and capital markets activities with a 1.5 °C pathway, setting a clear route to net‑zero by 2050.  It emphasises portfolio alignment and encourages financial institutions to support high‑emitting sectors in decarbonising, while integrating the guidance into existing risk and investment processes.</div>
+
+                <div class="update-changes">
+                    <div class="changes-title">📌 Significant Changes</div>
+                    <div>First comprehensive net-zero standard for financial sector; Portfolio-level emissions targets; Financed emissions accounting (PCAF-aligned); Sector-specific decarbonization pathways; Engagement and divestment framework</div>
+                </div>
+
+                <div class="update-sectors">
+                    <div class="meta-label">Affected Sectors</div>
+                    <div class="sectors-list">
+<span class="sector-tag">Banks</span><span class="sector-tag">Asset Managers</span><span class="sector-tag">Asset Owners</span><span class="sector-tag">Insurance companies</span><span class="sector-tag">Private Equity</span>
+                    </div>
+                </div>
+
+                <a href="https://sciencebasedtargets.org/news/the-sbti-opens-net-zero-standard-for-finance-industry" class="update-link" target="_blank">Read Full Document →</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-title">Sustainability Regulation Tracker</div>
+        <div class="footer-subtitle">Comprehensive ESG & Climate Disclosure Monitoring</div>
+        <div class="footer-meta">
+            <p>Prepared by: Deepa Rao | Sustainability Compliance Analyst</p>
+            <p style="margin-top: 8px; opacity: 0.7;">
+                This dashboard tracks global sustainability regulations including EU CSRD/ESRS, 
+                IFRS S1/S2, UK SRS, Japan SSBJ, India BRSR, and SBTi standards.
+            </p>
+            <p style="margin-top: 12px; font-size: 0.85rem;">
+                For questions or updates, please contact the administrator.
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

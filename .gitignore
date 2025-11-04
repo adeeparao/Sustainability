@@ -1,0 +1,44 @@
+# Exclude Python virtual environment
+.venv/
+venv/
+env/
+
+# Exclude Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Exclude sensitive files
+scripts/env.ps1
+*.db
+*.sqlite
+*.sqlite3
+
+# Exclude OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Exclude IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exclude log files
+*.log
+
+# Exclude temporary files
+*.tmp
+*.temp
+*.bak
+
+# Keep build output but exclude data directory
+data/
+!public/
+
+# Exclude email content files (contain temporary output)
+email_content_*.txt
+email_content_*.html
